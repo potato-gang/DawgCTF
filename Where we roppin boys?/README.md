@@ -88,7 +88,8 @@ everything else in `tryme`'s stackframe.
 After that `main` calls `tryme` again overwriting `input + 0` with the return  
 address for `tryme`.   
 We then have *again* the possibility to do a buffer-overflow.  
-If we repeat this we can allocate multiple stackframes.
+If we repeat this we can allocate multiple stackframes that are directly adjacent to  
+each other.
 This is the setup for our ROP-chain.
 
 ### Crafting an exploit
