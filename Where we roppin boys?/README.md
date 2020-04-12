@@ -88,8 +88,7 @@ everything else in `tryme`'s stackframe.
 After that `main` calls `tryme` again overwriting `input + 0` with the return  
 address for `tryme`.   
 We then have *again* the possibility to do a buffer-overflow.  
-If we repeat this multiple times we can force the stackpointer to go down preserving   
-the stackframes we wrote to.  
+If we repeat this we can allocate multiple stackframes.
 This is the setup for our ROP-chain.
 
 ### Crafting an exploit
@@ -101,24 +100,24 @@ by repeatedly calling main through the buffer-overflows:
 | -0x0   | Aligned by `main`          | 4    | __win()__          | main           |
 | -0x4   | Return pointer             | 4    | main()           | 1. tryme       |
 | -0x8   | Saved ebp                  | 4    | *garbage*        | 1. tryme       |
-| -0xc   | Saved ebx                  | 4    | pop ebx; pop ebp | 1. tryme       |
+| -0xC   | Saved ebx                  | 4    | pop ebx; pop ebp | 1. tryme       |
 | -0x10  | input + 4                  | 4    | *garbage*        | 1. tryme       |
 | -0x14  | input + 0 / Return Pointer | 4    | main()           | 1./2. tryme    |
 | |
 | -0x18  | Saved ebp                  | 4    | pop ebx; pop ebp | 2. tryme       |
-| -0x1c  | Saved ebx                  | 4    | __dusty_depot()__    | 2. tryme       |
+| -0x1C  | Saved ebx                  | 4    | __dusty_depot()__    | 2. tryme       |
 | -0x20  | input + 4                  | 4    | *garbage*        | 2. tryme       |
 | -0x24  | input + 0 / Return Pointer | 4    | main()           | 2./3. tryme    |
 | |
 | -0x28  | Saved ebp                  | 4    | pop ebx; pop ebp | 3. tryme       |
-| -0x2c  | Saved ebx                  | 4    | __lonely_lodge()__   | 3. tryme       |
+| -0x2C  | Saved ebx                  | 4    | __lonely_lodge()__   | 3. tryme       |
 | -0x30  | input + 4                  | 4    | *garbage*        | 3. tryme       |
 | -0x34  | input + 0 / Return Pointer | 4    | main()           | 3./4. tryme    |
 | ...    | ...                        | ...  | ...              | ...            |
 | -0x74  | input + 0 / Return Pointer | 4    | pop ebx          | 7./8. tryme    |
 | -0x78  | Saved ebp                  | 4    | *garbage*        | 8. tryme       |
-| -0x7c  | Saved ebx                  | 4    | *garbage*        | 8. tryme       |
-| -0x8C  | input                      | 8    | *garbage*        | 8. tryme       |
+| -0x7C  | Saved ebx                  | 4    | *garbage*        | 8. tryme       |
+| -0x84  | input                      | 8    | *garbage*        | 8. tryme       |
 
 Note how here the last function before `win` is `dusty_depot` and not `loot_lake`   
 because if you leave out the last 4 bytes of the shellcode you still get a valid   
