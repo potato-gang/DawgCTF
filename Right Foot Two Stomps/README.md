@@ -49,7 +49,7 @@ and `C2` is a block of the ciphertext.
 
 If we could arrange that the last byte of `C1` XORed with the last byte of `I2` equals `0x1` we would
 have a valid plaintext with a padding of 1 byte. The plaintext would consist of 16 bytes garbage (decryption
-of `C1`), 15 bytes of the stuff we care about (decryption of `C2`) and a 0x1 at the end.
+of `C1`) and 15 bytes of the stuff we care about (decryption of `C2`).
 Here `C1` must always be the block previous to the one we send as `C2`. It must be the IV when we send the first
 block as `C2`, it must be the first block if we send the second block as `C2` and so on.
 Note that we only change the last byte of the otherwise valid previous block.
@@ -62,8 +62,6 @@ padding-oracle attack to recover the plaintext byte. We know that `C1[15] ^ I2[1
 leaked value of `I2[15]`. This replays the 'normal' decryption process and we get the plaintext byte.
 
 Only one problem left: How do we arrange that `C1[15] ^ I2[15] == 0x1`? Well...we just bruteforce it.
-
-Good! So now we can leak the flag block by block.
 
 ### Profit
 [solve.py](./solve.py) implements the attack described above and we get the flag
