@@ -12,8 +12,6 @@ __Points__: 350
 >          as a bytes string.
 >    
 > \@author: pleoxconfusa  
->
-> Attachement: 
 
 ### Overview
 I used the same method as in [Right Foot Two Stomps](../Right%20Foot%20Two%20Stomps)
